@@ -1,6 +1,5 @@
 name: React CI Pipeline
 
-# 1. Trigger the pipeline on every push to the main branch
 on:
   push:
     branches: [ main, master ]
@@ -9,29 +8,29 @@ on:
 
 jobs:
   build-and-test:
-    # 2. Tell GitHub to run this on a clean Ubuntu virtual machine
     runs-on: ubuntu-latest
 
     steps:
-    # 3. Copy your repository code onto the virtual machine
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 4. Install Node.js on the virtual machine
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
-        cache: 'npm' # Speeds up future runs by caching dependencies
+        node-version: 24 # ✨ Fixed: Updated to Node 22 to clear the deprecation warning
+        cache: 'npm'
 
-    # 5. Install your project's dependencies
     - name: Install Dependencies
       run: npm ci
 
-    # 6. Run tests (if you have any setup)
+    # ✨ Fixed: Added CI=true environment variable. 
+    # This forces React to treat warnings as errors and prevents tests from running indefinitely.
     - name: Run Tests
       run: npm test -- --watchAll=false --passWithNoTests
+      env:
+        CI: true
 
-    # 7. Build the production-ready React app
     - name: Build Project
       run: npm run build
+      env:
+        CI: true # ✨ Ensures the build step handles warnings strictly and cleanly
