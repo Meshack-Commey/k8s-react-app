@@ -1,0 +1,37 @@
+name: React CI Pipeline
+
+# 1. Trigger the pipeline on every push to the main branch
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    # 2. Tell GitHub to run this on a clean Ubuntu virtual machine
+    runs-on: ubuntu-latest
+
+    steps:
+    # 3. Copy your repository code onto the virtual machine
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 4. Install Node.js on the virtual machine
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm' # Speeds up future runs by caching dependencies
+
+    # 5. Install your project's dependencies
+    - name: Install Dependencies
+      run: npm ci
+
+    # 6. Run tests (if you have any setup)
+    - name: Run Tests
+      run: npm test -- --watchAll=false --passWithNoTests
+
+    # 7. Build the production-ready React app
+    - name: Build Project
+      run: npm run build
