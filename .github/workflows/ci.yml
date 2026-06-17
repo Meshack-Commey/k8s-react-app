@@ -21,7 +21,7 @@ jobs:
         cache: 'npm'
 
     - name: Install Dependencies
-      run: npm ci
+      run: npm install #ci
 
     # We still keep tests to ensure we don't build a Docker image of broken code!
     - name: Run Tests
